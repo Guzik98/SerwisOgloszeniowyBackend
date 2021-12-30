@@ -4,6 +4,7 @@ export class LoginCredentialsDto {
   @IsEmail()
   @IsString()
   email: string
+
   @IsString()
   password: string
 }

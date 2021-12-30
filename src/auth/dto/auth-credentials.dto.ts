@@ -5,13 +5,22 @@ export class AuthCredentialsDto {
   @IsString()
   @MinLength(4)
   username: string
+
+  @IsString()
+  name: string
+
+  @IsString()
+  surname: string
+
   @IsString()
   @IsEmail()
   email: string
+
   @IsString()
   @MinLength(8)
   @MaxLength(32)
   password: string
+
   @IsEnum(Role)
   role: Role
 }
