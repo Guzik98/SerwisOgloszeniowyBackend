@@ -3,14 +3,8 @@ import { Role } from "../enum/role";
 
 export class AuthCredentialsDto {
   @IsString()
-  @MinLength(4)
+  @MinLength(3)
   username: string
-
-  @IsString()
-  name: string
-
-  @IsString()
-  surname: string
 
   @IsString()
   @IsEmail()

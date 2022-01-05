@@ -26,10 +26,20 @@ export class Certificate {
   @Prop()
   name: string;
   @Prop()
-  description: string;
+  institution: string;
 }
 
 export const CertificateSchema = SchemaFactory.createForClass(Certificate);
+
+@Schema({_id: false})
+export class Language {
+  @Prop()
+  name: string;
+  @Prop()
+  level: string;
+}
+
+export const LanguageSchema = SchemaFactory.createForClass(Language);
 
 @Schema({_id: false})
 export class Education {
@@ -37,6 +47,8 @@ export class Education {
   school_name: string;
   @Prop()
   degree: string;
+  @Prop()
+  area: string
 }
 
 export const EducationSchema = SchemaFactory.createForClass(Education);
@@ -47,6 +59,8 @@ export class Experience {
   company_name: string;
   @Prop()
   description: string;
+  @Prop()
+  job_title: string
 }
 
 export const ExperienceSchema = SchemaFactory.createForClass(Experience);
@@ -102,16 +116,16 @@ export class Offer {
   Linkedln_url: string
   @Prop()
   phone_number: string
-  @Prop({ type: [EducationSchema], default: []})
-  education: Education[]
-  @Prop({ type: [CertificateSchema], default: []})
-  certificate: Certificate[]
-  @Prop({ type: [ExperienceSchema], default: []})
-  experience: Experience[]
-  @Prop({ type: [ProjectSchema], default: []})
-  project: Project[]
   @Prop()
-  english_level: string
+  education: Education[] | null
+  @Prop()
+  certificate: Certificate[] | null
+  @Prop()
+  experience: Experience[] | null
+  @Prop()
+  project: Project[] | null
+  @Prop()
+  Languages: Language[]
   @Prop()
   experience_level: string;
   @Prop()
@@ -123,10 +137,8 @@ export class Offer {
   @Prop()
   country_code: string
   @Prop()
-  id: string;
-  @Prop({ type: [Employment_typesSchema], default: []})
-  employment_types: Employment_types[]
-  @Prop({ type: [SkillSchema], default: []})
+  employment_type: Employment_types[]
+  @Prop()
   skills: Skill[]
 }
 

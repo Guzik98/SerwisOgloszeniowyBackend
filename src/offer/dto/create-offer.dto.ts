@@ -9,13 +9,14 @@ import { ExperienceTypeDto } from "./nested/experience_type.dto";
 import { ProjectTypeDto } from "./nested/project_type.dto";
 import { EmploymentTypeDto } from "./nested/employment_type.dto";
 import { SkillTypeDto } from "./nested/skill_type.dto";
+import { languageTypeDto } from "./nested/language_type.dto";
 
 export class CreateOfferDto {
   @IsNotEmpty()
-  name;
+  name: string;
 
   @IsNotEmpty()
-  surname;
+  surname: string;
 
   @IsNotEmpty()
   short_personal_description: string
@@ -31,51 +32,35 @@ export class CreateOfferDto {
   @IsNotEmpty()
   city: string;
 
+  @Prop()
+  country_code: string
+
   @IsNotEmpty()
   address_text: string;
-
-  @IsEnum(MarkerIcon)
-  @IsNotEmpty()
-  marker_icon: string;
 
   @IsNotEmpty()
   @IsEmail()
   email: string
 
   github_url: string
-  Linkedln_url: string
+  linkedin_url: string
   phone_number: string
 
-  @IsDefined()
-  @IsArray()
-  @ValidateNested()
-  @ArrayMinSize(0)
-  @Type(() => EducationTypeDto)
-  education: EducationTypeDto[]
 
-  @IsDefined()
-  @IsArray()
-  @ValidateNested()
-  @ArrayMinSize(0)
-  @Type(() => CertificateTypeDto)
-  certificate: CertificateTypeDto[]
+  education: EducationTypeDto[] | null
 
-  @IsDefined()
-  @IsArray()
-  @ValidateNested()
-  @ArrayMinSize(0)
-  @Type(() => ExperienceTypeDto)
-  experience: ExperienceTypeDto[]
+  certificate: CertificateTypeDto[] | null
 
-  @IsDefined()
-  @IsArray()
-  @ValidateNested()
-  @ArrayMinSize(0)
-  @Type(() => ProjectTypeDto)
-  project: ProjectTypeDto[]
+  experience: ExperienceTypeDto[] | null
+
+  project: ProjectTypeDto[] | null
+
+  @IsEnum(MarkerIcon)
+  @IsNotEmpty()
+  marker_icon: string;
 
   @IsNotEmpty()
-  english_level: string;
+  language: languageTypeDto[] | null
 
   @IsEnum(ExperienceLevel)
   experience_level: string
@@ -86,26 +71,13 @@ export class CreateOfferDto {
   @IsNotEmpty()
   longitude: string;
 
-  @IsNotEmpty()
-  published_at: string;
+  // @IsNotEmpty()
+  // published_at: string;
 
-  @Prop()
-  country_code: string
 
-  @Prop()
-  id: string;
+  employment_type : EmploymentTypeDto[]
 
-  @IsArray()
-  @ArrayMinSize(1)
-  @Type(() => EmploymentTypeDto)
-  @ValidateNested({ each: true })
-  employment_types : EmploymentTypeDto[]
 
-  @IsDefined()
-  @IsArray()
-  @ValidateNested()
-  @ArrayMinSize(1)
-  @Type(() => SkillTypeDto)
   skills: SkillTypeDto[]
 }
 

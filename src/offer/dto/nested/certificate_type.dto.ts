@@ -6,5 +6,5 @@ export class CertificateTypeDto {
   @IsString()
   @MinLength(5)
   @MaxLength(40)
-  description: string
+  institution: string
 }

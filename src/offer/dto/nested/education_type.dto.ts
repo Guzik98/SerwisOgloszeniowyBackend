@@ -7,4 +7,7 @@ export class EducationTypeDto {
   @IsString()
   @IsNotEmpty()
   degree: string
+  @IsString()
+  @IsNotEmpty()
+  area: string
 }

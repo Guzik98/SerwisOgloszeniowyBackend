@@ -16,10 +16,10 @@ export class AuthService {
   ){}
 
   async signUp(authCredentialsDto: AuthCredentialsDto): Promise<User> {
-    const { username, password, role, email, name, surname } = authCredentialsDto;
+    const { username, password, role, email} = authCredentialsDto;
     const salt = await bcrypt.genSalt();
     const hashed = await bcrypt.hash(password, salt);
-    const createUser = ({ username: username, password: hashed,name: name, surname: surname, role: role, email: email })
+    const createUser = ({ username: username, password: hashed, role: role, email: email })
     const filter = {
       email: email
     }
@@ -29,7 +29,7 @@ export class AuthService {
           return this.authRepository.createUser(createUser);
         } else {
           this.logger.error('That email is already register')
-          throw new ConflictException('Account with that email is already exists')
+          throw new ConflictException('Account with that email already exists')
         }
       })
   }

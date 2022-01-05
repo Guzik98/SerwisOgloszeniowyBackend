@@ -5,4 +5,6 @@ export class ExperienceTypeDto {
   company_name: string
   @IsNotEmpty()
   description: string
+  @IsNotEmpty()
+  job_title: string
 }

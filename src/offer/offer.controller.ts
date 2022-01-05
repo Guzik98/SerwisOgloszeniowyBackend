@@ -15,7 +15,7 @@ export class OfferController {
   @UseGuards(AuthGuard())
   @Post()
   @UsePipes(ValidationPipe)
-  async  createOffer(
+  async createOffer(
     @Body() createOffersDto: CreateOfferDto,
     @GetUser() user: User
   ): Promise<Offer>{
