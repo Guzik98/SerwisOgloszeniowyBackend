@@ -21,6 +21,7 @@ export class CreateOfferDto {
   @IsNotEmpty()
   short_personal_description: string
 
+  @IsNotEmpty()
   photo_url: string
 
   @IsNotEmpty()
@@ -71,8 +72,8 @@ export class CreateOfferDto {
   @IsNotEmpty()
   longitude: string;
 
-  // @IsNotEmpty()
-  // published_at: string;
+  @IsNotEmpty()
+  published_at: string;
 
 
   employment_type : EmploymentTypeDto[]
