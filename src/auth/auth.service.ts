@@ -16,13 +16,13 @@ export class AuthService {
   ){}
 
   async signUp(authCredentialsDto: AuthCredentialsDto): Promise<User> {
-    const { username, password, role, email} = authCredentialsDto;
+    const { password, email} = authCredentialsDto;
     const salt = await bcrypt.genSalt();
     const hashed = await bcrypt.hash(password, salt);
-    const createUser = ({ username: username, password: hashed, role: role, email: email })
-    const filter = {
-      email: email
-    }
+    const createUser = ({ ...authCredentialsDto, password: hashed });
+
+    const filter = { email: email };
+
     return await this.authRepository.findOneUser(filter)
       .then((response) => {
         if(response === null){
@@ -40,16 +40,22 @@ export class AuthService {
       email: email
     }
     const user = await this.authRepository.findOneUser(filter);
-    if (user && (await  bcrypt.compare(password, user.password))){
-      const role = user.role;
-      const username  = user.username;
-      const payload: JwtPayload = { username, role  };
-      const accessToken = this.jwtService.sign(payload);
-      this.logger.verbose(`${username} is logged in`);
-      return { accessToken };
+    if (user && (await bcrypt.compare(password, user.password))){
+      return this.founded(user)
+
     } else {
       this.logger.error('user was not found');
       throw new UnauthorizedException('Please check your email and password')
     }
   }
+
+  founded(user){
+    const payload: JwtPayload = { username: user.username, email: user.email };
+    const accessToken = this.jwtService.sign(payload);
+
+    this.logger.verbose(`${user.username} is logged in`);
+    return { accessToken };
+  }
 }
+
+

@@ -4,6 +4,7 @@ import { Offer } from "./schema/offer.schema";
 import { OfferRepository } from "./offer.repository";
 import { CreateOfferDto } from "./dto/create-offer.dto";
 import { User } from "../auth/schema/user.schema";
+import { Schema } from "mongoose";
 
 @Injectable()
 export class OfferService {
@@ -18,28 +19,20 @@ export class OfferService {
     return this.offerRepository.getAllOffers();
   }
 
-  async findUserAndUpdate(offer: Offer, user: User, todo: string): Promise<void> {
-    const filter = { email: user.email };
-    let update;
-    if(todo === 'add'){
-      update = { offers: [...user.offers, offer._id] };
-    }
-
-    if (todo === 'delete'){
-      update = { "$pull" : { "offers" :  offer._id } };
-    }
-
-    await this.authRepository.findUserAndUpdate(filter, update);
-  }
-
   async createOffer(createOffersDto: CreateOfferDto, user: User): Promise<Offer> {
+    createOffersDto.owner = user.email
     const createdOffer = this.offerRepository.createOffer(createOffersDto);
     this.logger.verbose(`user created new Offer ${user.username}`)
-
-    await this.findUserAndUpdate(await createdOffer, user, 'add');
-    this.logger.verbose(`user account updated`);
-
     return createdOffer;
+  }
+
+  async deleteOfferById(_id: { type: Schema.Types.ObjectId; ref: 'Offer' }): Promise<void>{
+    await this.offerRepository.deleteOfferById(_id);
+    this.logger.verbose('offer is deleted');
+  }
+
+  async updateOfferById(_id: { type: Schema.Types.ObjectId; ref: 'Offer' }, createOffersDto: CreateOfferDto ): Promise<Offer>{
+    return this.offerRepository.updateOfferById(_id, createOffersDto)
   }
 
 }

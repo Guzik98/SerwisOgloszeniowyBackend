@@ -3,7 +3,6 @@ import { PassportStrategy } from "@nestjs/passport";
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { AuthRepository } from "../auth.repository";
 import { User } from "../schema/user.schema";
-import { serializeUser } from "passport";
 import { JwtPayload } from "./jwt-payload.interface";
 
 @Injectable()
@@ -20,9 +19,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: JwtPayload): Promise<User> {
-    const { username } = payload
+    const { email } = payload
     const filter = {
-      username: username
+      email: email
     }
     const user: User = await  this.authRepository.findOneUser(filter);
 

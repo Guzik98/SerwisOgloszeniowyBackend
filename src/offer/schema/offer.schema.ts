@@ -91,6 +91,8 @@ export type OfferDocument = Offer & Document
 export class Offer {
   _id: mongoose.Schema.Types.ObjectId
   @Prop()
+  owner: string;
+  @Prop()
   name: string;
   @Prop()
   surname: string;

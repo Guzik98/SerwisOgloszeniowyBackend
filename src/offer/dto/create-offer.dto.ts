@@ -75,9 +75,9 @@ export class CreateOfferDto {
   @IsNotEmpty()
   published_at: string;
 
+  owner: string
 
   employment_type : EmploymentTypeDto[]
-
 
   skills: SkillTypeDto[]
 }
