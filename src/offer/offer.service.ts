@@ -34,5 +34,4 @@ export class OfferService {
   async updateOfferById(_id: { type: Schema.Types.ObjectId; ref: 'Offer' }, createOffersDto: CreateOfferDto ): Promise<Offer>{
     return this.offerRepository.updateOfferById(_id, createOffersDto)
   }
-
 }

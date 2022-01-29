@@ -127,7 +127,7 @@ export class Offer {
   @Prop()
   project: Project[] | null
   @Prop()
-  Languages: Language[]
+  language: Language[]
   @Prop()
   experience_level: string;
   @Prop()

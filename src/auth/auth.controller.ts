@@ -1,8 +1,10 @@
-import { Body, Controller, Logger, Post } from "@nestjs/common";
+import { Body, Controller, Get, Logger, Post, Req, Res, UseGuards } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { AuthCredentialsDto } from "./dto/auth-credentials.dto";
 import { User } from "./schema/user.schema";
 import { LoginCredentialsDto } from "./dto/login-credentials.dto";
+import { Response, Request } from 'express';
+import { AuthGuard } from "@nestjs/passport";
 
 @Controller('auth')
 export class AuthController {
@@ -17,8 +19,23 @@ export class AuthController {
   }
 
   @Post('/signin')
-  signIn(@Body() loginCredentialsDto: LoginCredentialsDto): Promise<{ accessToken: string}> {
+  signIn(
+    @Body() loginCredentialsDto: LoginCredentialsDto,
+    @Res({ passthrough: true }) response: Response,
+  ): Promise<void> {
     this.logger.verbose(`User ${loginCredentialsDto.email} is trying to login in`)
-    return  this.authService.singIn(loginCredentialsDto);
+    return  this.authService.singIn(loginCredentialsDto, response);
   }
+
+  @Get('/user')
+  user(@Req() request: Request) {
+    return this.authService.checkUser(request);
+  }
+
+  @UseGuards(AuthGuard())
+  @Post('/logout')
+  async logout(@Res({ passthrough: true }) response: Response): Promise<void> {
+    response.clearCookie('jwt');
+  }
+
 }

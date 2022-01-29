@@ -21,40 +21,55 @@ export class AuthService {
     const hashed = await bcrypt.hash(password, salt);
     const createUser = ({ ...authCredentialsDto, password: hashed });
 
-    const filter = { email: email };
+    const user = await  this.authRepository.findOneUser( { email: email })
 
-    return await this.authRepository.findOneUser(filter)
-      .then((response) => {
-        if(response === null){
-          return this.authRepository.createUser(createUser);
-        } else {
-          this.logger.error('That email is already register')
-          throw new ConflictException('Account with that email already exists')
-        }
-      })
+    if(!user){
+      this.logger.verbose('New account is created');
+      return this.authRepository.createUser(createUser);
+    } else {
+      this.logger.error('That email is already register')
+      throw new ConflictException('Account with that email already exists')
+    }
   }
 
-  async singIn(loginCredentialsDto: LoginCredentialsDto): Promise<{ accessToken: string}> {
+  async singIn(loginCredentialsDto: LoginCredentialsDto, response): Promise<void> {
     const { email, password } = loginCredentialsDto
-    const filter = {
-      email: email
-    }
-    const user = await this.authRepository.findOneUser(filter);
-    if (user && (await bcrypt.compare(password, user.password))){
-      return this.founded(user)
 
-    } else {
+    const user = await this.authRepository.findOneUser({ email: email });
+
+    if (!user){
       this.logger.error('user was not found');
       throw new UnauthorizedException('Please check your email and password')
     }
-  }
 
-  founded(user){
+    if (!await bcrypt.compare(password, user.password)){
+      this.logger.error('Invalid password');
+      throw new UnauthorizedException('Please check your email and password')
+    }
+
     const payload: JwtPayload = { username: user.username, email: user.email };
+
     const accessToken = this.jwtService.sign(payload);
 
+    response.cookie('jwt', accessToken, { httpOnly: true, expires: new Date(Date.now() + 1000 * 3600) });
+
     this.logger.verbose(`${user.username} is logged in`);
-    return { accessToken };
+
+  }
+
+  async checkUser(request){
+    try {
+      const cookie = request.cookies['jwt'];
+      const data = await this.jwtService.verifyAsync(cookie);
+
+      if (!data) {
+        throw new UnauthorizedException();
+      }
+
+      return data;
+    } catch (e) {
+      throw new UnauthorizedException();
+    }
   }
 }
 

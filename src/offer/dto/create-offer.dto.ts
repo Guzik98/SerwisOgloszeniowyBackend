@@ -60,7 +60,6 @@ export class CreateOfferDto {
   @IsNotEmpty()
   marker_icon: string;
 
-  @IsNotEmpty()
   language: languageTypeDto[] | null
 
   @IsEnum(ExperienceLevel)

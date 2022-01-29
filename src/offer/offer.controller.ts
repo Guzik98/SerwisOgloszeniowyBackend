@@ -42,7 +42,7 @@ export class OfferController {
   }
 
   @UseGuards(AuthGuard())
-  @Delete('/your-offers/:_id')
+  @Delete('/:_id')
   deleteOfferById(
     @Param('_id') _id: { type: Schema.Types.ObjectId; ref: 'Offer' },
   ): Promise<void>{
@@ -51,7 +51,7 @@ export class OfferController {
 
   @UseGuards(AuthGuard())
   @UsePipes(ValidationPipe)
-  @Post('/your-offers/:_id')
+  @Post(':_id')
   updateOfferById(
     @Param('_id') _id: { type: Schema.Types.ObjectId; ref: 'Offer' },
     @Body() createOffersDto: CreateOfferDto
