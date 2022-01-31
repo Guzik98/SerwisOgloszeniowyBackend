@@ -10,39 +10,39 @@ import { JwtPayload } from "./jwt/jwt-payload.interface";
 @Injectable()
 export class AuthService {
   private logger = new Logger(`AuthService`);
+
   constructor(
     private jwtService: JwtService,
-    private readonly  authRepository: AuthRepository
-  ){}
+    private readonly authRepository: AuthRepository
+  ) {}
 
   async signUp(authCredentialsDto: AuthCredentialsDto): Promise<User> {
-    const { password, email} = authCredentialsDto;
+    const { password, email } = authCredentialsDto;
     const salt = await bcrypt.genSalt();
     const hashed = await bcrypt.hash(password, salt);
     const createUser = ({ ...authCredentialsDto, password: hashed });
 
-    const user = await  this.authRepository.findOneUser( { email: email })
+    const user = await this.authRepository.findOneUser({ email: email })
 
-    if(!user){
+    if (!user) {
       this.logger.verbose('New account is created');
       return this.authRepository.createUser(createUser);
-    } else {
-      this.logger.error('That email is already register')
-      throw new ConflictException('Account with that email already exists')
     }
+
+    this.logger.error('That email is already register')
+    throw new ConflictException('Account with that email already exists')
   }
 
   async singIn(loginCredentialsDto: LoginCredentialsDto, response): Promise<void> {
     const { email, password } = loginCredentialsDto
-
     const user = await this.authRepository.findOneUser({ email: email });
 
-    if (!user){
+    if (!user) {
       this.logger.error('user was not found');
       throw new UnauthorizedException('Please check your email and password')
     }
 
-    if (!await bcrypt.compare(password, user.password)){
+    if (!await bcrypt.compare(password, user.password)) {
       this.logger.error('Invalid password');
       throw new UnauthorizedException('Please check your email and password')
     }
@@ -51,13 +51,13 @@ export class AuthService {
 
     const accessToken = this.jwtService.sign(payload);
 
+    console.log(accessToken);
     response.cookie('jwt', accessToken, { httpOnly: true, expires: new Date(Date.now() + 1000 * 3600) });
 
     this.logger.verbose(`${user.username} is logged in`);
-
   }
 
-  async checkUser(request){
+  async checkUser(request): Promise<any> {
     try {
       const cookie = request.cookies['jwt'];
       const data = await this.jwtService.verifyAsync(cookie);
@@ -65,12 +65,10 @@ export class AuthService {
       if (!data) {
         throw new UnauthorizedException();
       }
-
       return data;
     } catch (e) {
       throw new UnauthorizedException();
     }
   }
 }
-
 
