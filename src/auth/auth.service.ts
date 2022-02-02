@@ -51,13 +51,12 @@ export class AuthService {
 
     const accessToken = this.jwtService.sign(payload);
 
-    console.log(accessToken);
     response.cookie('jwt', accessToken, { httpOnly: true, expires: new Date(Date.now() + 1000 * 3600) });
 
     this.logger.verbose(`${user.username} is logged in`);
   }
 
-  async checkUser(request): Promise<any> {
+  async checkUser(request): Promise<void> {
     try {
       const cookie = request.cookies['jwt'];
       const data = await this.jwtService.verifyAsync(cookie);

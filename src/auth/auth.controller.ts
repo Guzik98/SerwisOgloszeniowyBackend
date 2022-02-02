@@ -27,12 +27,12 @@ export class AuthController {
   }
 
   @Get('/user')
-  user(@Req() request: Request) {
+  user(@Req() request: Request): Promise<void> {
     return this.authService.checkUser(request);
   }
 
   @Get('/logout')
-  async logout(@Res({ passthrough: true }) response: Response,): Promise<any> {
+  async logout(@Res({ passthrough: true }) response: Response,): Promise<void> {
     this.logger.verbose('User is logged out')
     response.cookie('jwt','', { expires: new Date() })
   }
